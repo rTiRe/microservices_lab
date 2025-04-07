@@ -1,0 +1,39 @@
+services:
+  app-1:
+    build: ./rest_service
+    ports:
+      - 6080:6080
+    restart: unless-stopped
+    command: bash -c "poetry run python -m src"
+    volumes:
+      - ./rest_service:/usr/src/micro/rest_service
+
+  app-2:
+    build: ./rest_service
+    ports:
+      - 6081:6080
+    restart: unless-stopped
+    command: bash -c "poetry run python -m src"
+    volumes:
+      - ./rest_service:/usr/src/micro/rest_service
+
+  app-3:
+    build: ./rest_service/
+    ports:
+      - 6082:6080
+    restart: unless-stopped
+    command: bash -c "poetry run python -m src"
+    volumes:
+      - ./rest_service:/usr/src/micro/rest_service
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - 80:80
+    restart: unless-stopped
+    depends_on:
+      - app-1
+      - app-2
+      - app-3
